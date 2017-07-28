@@ -12,6 +12,11 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         now = timezone.now()
         return Question.objects.filter(pub_date__lte=now).order_by('-pub_date')[:5]
+        # return Question.objects.filter(
+        #             pub_date__lte=now
+        #         ).filter(
+        #             choice__isnull=False
+        #         ).distinct().order_by('-pub_date')[:5]
 
 class DetailView(generic.DetailView):
     model = Question
@@ -24,6 +29,10 @@ class DetailView(generic.DetailView):
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
+
+    def get_queryset(self):
+        now = timezone.now()
+        return Question.objects.filter(pub_date__lte=now)
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
